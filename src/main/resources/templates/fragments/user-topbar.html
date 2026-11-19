@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<header th:fragment="topbar"
+        class="user-topbar">
+
+    <div class="topbar-left">
+
+        <button type="button"
+                class="sidebar-toggle-button"
+                id="sidebarToggleButton"
+                aria-label="Open navigation">
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+        <div class="topbar-title">
+
+            <h1 th:text="${pageTitle}">
+                Dashboard
+            </h1>
+
+            <p th:text="${pageSubtitle}">
+                Your KitLoop activity at a glance.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="topbar-right">
+
+        <div class="topbar-wallet">
+
+            <span class="topbar-wallet-icon">
+                <i class="bi bi-wallet2"></i>
+            </span>
+
+            <div>
+                <small>Wallet</small>
+
+                <strong>
+                    ৳<span th:text="${#numbers.formatDecimal(currentUser.walletBalance, 1, 2)}">
+                        0.00
+                    </span>
+                </strong>
+            </div>
+
+        </div>
+
+        <a th:href="@{/user/notifications}"
+           class="topbar-icon-button"
+           aria-label="Notifications">
+
+            <i class="bi bi-bell"></i>
+
+        </a>
+
+        <div class="topbar-user">
+
+            <span class="topbar-user-avatar">
+                <i class="bi bi-person"></i>
+            </span>
+
+            <div class="topbar-user-copy">
+
+                <strong th:text="${currentUser.fullName}">
+                    User
+                </strong>
+
+                <small>DIU Member</small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+</body>
+</html>

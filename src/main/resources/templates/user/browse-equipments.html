@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Browse Equipments | KitLoop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/user-portal.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/marketplace.css}">
+
+</head>
+
+<body>
+
+<div class="portal-shell">
+
+    <div th:replace="~{fragments/user-sidebar :: sidebar}">
+    </div>
+
+    <div class="sidebar-backdrop"
+         id="sidebarBackdrop">
+    </div>
+
+    <div class="user-main">
+
+        <div th:replace="~{fragments/user-topbar :: topbar}">
+        </div>
+
+        <main class="user-content">
+
+            <section class="marketplace-hero">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        KitLoop Marketplace
+                    </span>
+
+                    <h2>
+                        Find equipment around your community
+                    </h2>
+
+                    <p>
+                        Browse items available for free sharing,
+                        rent, or sale from verified KitLoop users.
+                    </p>
+
+                </div>
+
+                <a th:href="@{/user/listings/new}"
+                   class="market-primary-button">
+
+                    <i class="bi bi-plus-circle"></i>
+                    Add Equipment
+
+                </a>
+
+            </section>
+
+            <form th:action="@{/user/equipments}"
+                  method="get"
+                  class="market-filter-card">
+
+                <div class="market-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="search"
+                           name="q"
+                           th:value="${searchQuery}"
+                           placeholder="Search equipment...">
+
+                </div>
+
+                <select name="category"
+                        class="filter-select">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    <option th:each="category : ${categories}"
+                            th:value="${category.name()}"
+                            th:text="${category.label}"
+                            th:selected="${selectedCategory == category}">
+                    </option>
+
+                </select>
+
+                <select name="type"
+                        class="filter-select">
+
+                    <option value="">
+                        All Types
+                    </option>
+
+                    <option th:each="type : ${listingTypes}"
+                            th:value="${type.name()}"
+                            th:text="${type.label}"
+                            th:selected="${selectedType == type}">
+                    </option>
+
+                </select>
+
+                <select name="condition"
+                        class="filter-select">
+
+                    <option value="">
+                        All Conditions
+                    </option>
+
+                    <option th:each="condition : ${conditions}"
+                            th:value="${condition.name()}"
+                            th:text="${condition.label}"
+                            th:selected="${selectedCondition == condition}">
+                    </option>
+
+                </select>
+
+                <select name="status"
+                        class="filter-select">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option th:each="status : ${statuses}"
+                            th:value="${status.name()}"
+                            th:text="${status.label}"
+                            th:selected="${selectedStatus == status}">
+                    </option>
+
+                </select>
+
+                <button type="submit"
+                        class="filter-button">
+
+                    Filter
+
+                </button>
+
+                <a th:href="@{/user/equipments}"
+                   class="filter-reset-button"
+                   aria-label="Reset filters">
+
+                    <i class="bi bi-arrow-counterclockwise"></i>
+
+                </a>
+
+            </form>
+
+            <div class="market-results-heading">
+
+                <div>
+
+                    <h3>
+                        Equipment
+                    </h3>
+
+                    <p>
+                        <strong th:text="${#lists.size(listings)}">
+                            0
+                        </strong>
+                        listing(s) found
+                    </p>
+
+                </div>
+
+            </div>
+
+            <section th:if="${!#lists.isEmpty(listings)}"
+                     class="marketplace-grid">
+
+                <a th:each="listing : ${listings}"
+                   th:href="@{/user/listings/{id}(id=${listing.id})}"
+                   class="equipment-card">
+
+                    <div class="equipment-card-image">
+
+                        <img th:src="@{/media/equipment/{filename}(filename=${listing.imageFilename})}"
+                             th:alt="${listing.title}">
+
+                        <span class="type-badge"
+                              th:classappend="${' type-' + #strings.toLowerCase(listing.listingType.name())}"
+                              th:text="${listing.listingType.label}">
+                            Rent
+                        </span>
+
+                        <span class="status-badge"
+                              th:text="${listing.status.label}">
+                            Active
+                        </span>
+
+                    </div>
+
+                    <div class="equipment-card-body">
+
+                        <div class="equipment-meta">
+
+                            <span th:text="${listing.category.label}">
+                                Electronics
+                            </span>
+
+                            <span>
+                                •
+                            </span>
+
+                            <span th:text="${listing.condition.label}">
+                                Good
+                            </span>
+
+                        </div>
+
+                        <h3 th:text="${listing.title}">
+                            Equipment title
+                        </h3>
+
+                        <div class="equipment-owner">
+
+                            <i class="bi bi-person-circle"></i>
+
+                            <span th:text="${listing.owner.fullName}">
+                                Owner
+                            </span>
+
+                        </div>
+
+                        <div class="equipment-card-footer">
+
+                            <div class="equipment-price"
+                                 th:if="${listing.listingType.name() == 'RENT'}">
+
+                                <small>Rent</small>
+
+                                <strong>
+                                    ৳<span th:text="${#numbers.formatDecimal(listing.rentPrice, 1, 2)}">
+                                        0.00
+                                    </span>
+                                </strong>
+
+                            </div>
+
+                            <div class="equipment-price"
+                                 th:if="${listing.listingType.name() == 'SALE'}">
+
+                                <small>Sale</small>
+
+                                <strong>
+                                    ৳<span th:text="${#numbers.formatDecimal(listing.salePrice, 1, 2)}">
+                                        0.00
+                                    </span>
+                                </strong>
+
+                            </div>
+
+                            <div class="equipment-price"
+                                 th:if="${listing.listingType.name() == 'FREE_SHARE'}">
+
+                                <small>Refundable Deposit</small>
+
+                                <strong>
+                                    ৳<span th:text="${#numbers.formatDecimal(listing.refundableDeposit, 1, 2)}">
+                                        0.00
+                                    </span>
+                                </strong>
+
+                            </div>
+
+                            <span class="view-listing-arrow">
+                                <i class="bi bi-arrow-up-right"></i>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </section>
+
+            <section th:if="${#lists.isEmpty(listings)}"
+                     class="content-card">
+
+                <div class="empty-state">
+
+                    <span class="empty-state-icon">
+                        <i class="bi bi-search"></i>
+                    </span>
+
+                    <h3>
+                        No equipment found
+                    </h3>
+
+                    <p>
+                        Try changing your search or filters,
+                        or add the first matching equipment listing.
+                    </p>
+
+                    <a th:href="@{/user/listings/new}"
+                       class="market-primary-button mt-3">
+
+                        <i class="bi bi-plus-circle"></i>
+                        Add Equipment
+
+                    </a>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script th:src="@{/js/user-portal.js}">
+</script>
+
+</body>
+</html>

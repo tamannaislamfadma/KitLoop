@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Dashboard | KitLoop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/user-portal.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/lifecycle.css}">
+
+</head>
+
+<body>
+
+<div class="portal-shell">
+
+    <div th:replace="~{fragments/user-sidebar :: sidebar}">
+    </div>
+
+    <div class="sidebar-backdrop"
+         id="sidebarBackdrop">
+    </div>
+
+    <div class="user-main">
+
+        <div th:replace="~{fragments/user-topbar :: topbar}">
+        </div>
+
+        <main class="user-content">
+
+            <section class="welcome-banner">
+
+                <div class="welcome-copy">
+
+                    <span class="welcome-eyebrow">
+                        <i class="bi bi-stars"></i>
+                        KitLoop Community
+                    </span>
+
+                    <h2>
+                        Welcome,
+                        <span th:text="${currentUser.fullName}">
+                            User
+                        </span>
+                    </h2>
+
+                    <p>
+                        Share equipment, rent what you need,
+                        and build trust across the DIU community.
+                    </p>
+
+                    <div class="welcome-actions">
+
+                        <a th:href="@{/user/equipments}"
+                           class="welcome-primary-button">
+
+                            <i class="bi bi-search"></i>
+                            Browse Equipments
+
+                        </a>
+
+                        <a th:href="@{/user/listings}"
+                           class="welcome-secondary-button">
+
+                            <i class="bi bi-box-seam"></i>
+                            My Listing
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="metric-grid">
+
+                <article class="metric-card metric-highlight">
+
+                    <div class="metric-card-header">
+
+                        <span class="metric-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </span>
+
+                        <span class="metric-label">
+                            Trust Score
+                        </span>
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        <strong th:text="${currentUser.trustScore}">
+                            0
+                        </strong>
+
+                        <span>pts</span>
+
+                    </div>
+
+                </article>
+
+                <article class="metric-card">
+
+                    <div class="metric-card-header">
+
+                        <span class="metric-icon">
+                            <i class="bi bi-wallet2"></i>
+                        </span>
+
+                        <span class="metric-label">
+                            Wallet Balance
+                        </span>
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        <span>৳</span>
+
+                        <strong th:text="${#numbers.formatDecimal(currentUser.walletBalance, 1, 2)}">
+                            0.00
+                        </strong>
+
+                    </div>
+
+                </article>
+
+                <article class="metric-card">
+
+                    <div class="metric-card-header">
+
+                        <span class="metric-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </span>
+
+                        <span class="metric-label">
+                            My Listings
+                        </span>
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        <strong th:text="${stats.myListings}">
+                            0
+                        </strong>
+
+                    </div>
+
+                </article>
+
+                <article class="metric-card">
+
+                    <div class="metric-card-header">
+
+                        <span class="metric-icon">
+                            <i class="bi bi-hourglass-split"></i>
+                        </span>
+
+                        <span class="metric-label">
+                            Pending Requests
+                        </span>
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        <strong th:text="${stats.pendingRequests}">
+                            0
+                        </strong>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+            <section class="history-grid">
+
+                <article class="history-card">
+
+                    <h3>
+                        Wallet History
+                    </h3>
+
+                    <div th:if="${#lists.isEmpty(walletTransactions)}"
+                         class="history-empty">
+
+                        No wallet transactions yet.
+
+                    </div>
+
+                    <div th:if="${!#lists.isEmpty(walletTransactions)}"
+                         class="history-list">
+
+                        <div th:each="transaction : ${walletTransactions}"
+                             class="history-item">
+
+                            <div>
+
+                                <strong th:text="${transaction.description}">
+                                </strong>
+
+                                <small>
+                                    Balance after:
+                                    ৳<span th:text="${#numbers.formatDecimal(transaction.balanceAfter, 1, 2)}">
+                                    </span>
+                                </small>
+
+                            </div>
+
+                            <span class="history-value">
+
+                                +৳<span th:text="${#numbers.formatDecimal(transaction.amount, 1, 2)}">
+                                </span>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <article class="history-card">
+
+                    <h3>
+                        Trust Score History
+                    </h3>
+
+                    <div th:if="${#lists.isEmpty(trustHistory)}"
+                         class="history-empty">
+
+                        No trust-score events yet.
+
+                    </div>
+
+                    <div th:if="${!#lists.isEmpty(trustHistory)}"
+                         class="history-list">
+
+                        <div th:each="history : ${trustHistory}"
+                             class="history-item">
+
+                            <div>
+
+                                <strong th:text="${history.description}">
+                                </strong>
+
+                                <small>
+                                    Score after:
+                                    <span th:text="${history.scoreAfter}">
+                                    </span>
+                                </small>
+
+                            </div>
+
+                            <span class="history-value">
+
+                                +<span th:text="${history.points}">
+                                </span>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/user-portal.js}">
+</script>
+
+</body>
+</html>

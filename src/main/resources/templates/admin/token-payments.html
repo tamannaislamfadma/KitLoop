@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Token Payments | KitLoop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin-portal.css}">
+
+</head>
+
+<body>
+
+<div class="admin-shell">
+
+    <div th:replace="~{fragments/admin-sidebar :: sidebar}">
+    </div>
+
+    <div class="admin-main">
+
+        <div th:replace="~{fragments/admin-topbar :: topbar}">
+        </div>
+
+        <main class="admin-content">
+
+            <div th:if="${decisionSuccess}"
+                 class="admin-alert success">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span th:text="${decisionSuccess}">
+                </span>
+
+            </div>
+
+            <div th:if="${decisionError}"
+                 class="admin-alert danger">
+
+                <i class="bi bi-exclamation-circle-fill"></i>
+
+                <span th:text="${decisionError}">
+                </span>
+
+            </div>
+
+            <section class="admin-panel">
+
+                <h2>
+                    FREE_SHARE Token Payments
+                </h2>
+
+                <p>
+                    Review payment details before approval.
+                </p>
+
+                <div th:if="${#lists.isEmpty(requests)}"
+                     class="mt-4">
+
+                    No token payments yet.
+
+                </div>
+
+                <div th:if="${!#lists.isEmpty(requests)}"
+                     class="admin-table-card">
+
+                    <table class="admin-table">
+
+                        <thead>
+
+                        <tr>
+                            <th>Listing</th>
+                            <th>Payer</th>
+                            <th>Owner</th>
+                            <th>Amount</th>
+                            <th>Transaction</th>
+                            <th>Sender</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="request : ${requests}">
+
+                            <td>
+                                <strong th:text="${request.listing.title}">
+                                    Listing
+                                </strong>
+                            </td>
+
+                            <td th:text="${request.requester.fullName}">
+                                Payer
+                            </td>
+
+                            <td th:text="${request.listing.owner.fullName}">
+                                Owner
+                            </td>
+
+                            <td>
+                                ৳<span th:text="${#numbers.formatDecimal(request.payableAmount, 1, 2)}">
+                                    0.00
+                                </span>
+                            </td>
+
+                            <td th:text="${request.transactionId}">
+                                TXN
+                            </td>
+
+                            <td th:text="${request.senderNumber}">
+                                Sender
+                            </td>
+
+                            <td th:text="${request.status.label}">
+                                Pending
+                            </td>
+
+                            <td>
+
+                                <div class="admin-table-actions">
+
+                                    <a th:href="@{/media/payments/{filename}(filename=${request.paymentScreenshotFilename})}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       class="admin-button secondary">
+
+                                        <i class="bi bi-image"></i>
+                                        Proof
+
+                                    </a>
+
+                                    <form th:if="${request.status.name() == 'PENDING'}"
+                                          th:action="@{/admin/token-payments/{id}/approve(id=${request.id})}"
+                                          method="post">
+
+                                        <button type="submit"
+                                                class="admin-button primary">
+
+                                            Approve
+
+                                        </button>
+
+                                    </form>
+
+                                    <form th:if="${request.status.name() == 'PENDING'}"
+                                          th:action="@{/admin/token-payments/{id}/reject(id=${request.id})}"
+                                          method="post">
+
+                                        <button type="submit"
+                                                class="admin-button danger">
+
+                                            Reject
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/admin-portal.js}">
+</script>
+
+</body>
+</html>

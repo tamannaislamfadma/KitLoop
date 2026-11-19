@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<aside th:fragment="sidebar"
+       class="admin-sidebar"
+       id="adminSidebar">
+
+    <div class="admin-sidebar-brand">
+
+        <span>
+            <i class="bi bi-arrow-repeat"></i>
+        </span>
+
+        <div>
+            <strong>KitLoop</strong>
+            <small>Administrator</small>
+        </div>
+
+    </div>
+
+    <button type="button"
+            class="admin-sidebar-close"
+            id="adminSidebarClose">
+
+        <i class="bi bi-x-lg"></i>
+
+    </button>
+
+    <nav class="admin-sidebar-nav">
+
+        <a th:href="@{/admin/dashboard}"
+           th:classappend="${activePage == 'dashboard'} ? ' active' : ''">
+
+            <i class="bi bi-grid"></i>
+            Dashboard
+
+        </a>
+
+        <a th:href="@{/admin/token-payments}"
+           th:classappend="${activePage == 'payments'} ? ' active' : ''">
+
+            <i class="bi bi-receipt"></i>
+            Token Payments
+
+        </a>
+
+        <a th:href="@{/admin/settings}"
+           th:classappend="${activePage == 'settings'} ? ' active' : ''">
+
+            <i class="bi bi-gear"></i>
+            Admin Settings
+
+        </a>
+
+        <a th:href="@{/admin/notifications}"
+           th:classappend="${activePage == 'notifications'} ? ' active' : ''">
+
+            <i class="bi bi-bell"></i>
+            Notifications
+
+        </a>
+
+    </nav>
+
+    <div class="admin-sidebar-spacer">
+    </div>
+
+    <div class="admin-sidebar-user">
+
+        <i class="bi bi-person-badge"></i>
+
+        <div>
+
+            <strong th:text="${currentUser.fullName}">
+                Admin
+            </strong>
+
+            <small th:text="${currentUser.email}">
+                admin
+            </small>
+
+        </div>
+
+    </div>
+
+    <form th:action="@{/logout}"
+          method="post">
+
+        <button type="submit"
+                class="admin-logout">
+
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+
+        </button>
+
+    </form>
+
+</aside>
+
+</body>
+</html>

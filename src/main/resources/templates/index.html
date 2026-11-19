@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="KitLoop DIU equipment sharing marketplace.">
+
+    <title>KitLoop | Sign In</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/app.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/auth.css}">
+</head>
+
+<body>
+
+<main class="auth-page"
+      th:attr="data-initial-tab=${activeTab}">
+
+    <section class="auth-hero">
+
+        <div class="auth-hero-overlay"></div>
+
+        <div class="auth-hero-content">
+
+            <div th:replace="~{fragments/brand :: brand}">
+            </div>
+
+            <div class="hero-copy">
+
+                <span class="hero-eyebrow">
+                    <i class="bi bi-stars"></i>
+                    DIU Community Marketplace
+                </span>
+
+                <h1>
+                    Make campus equipment
+                    <span>go further.</span>
+                </h1>
+
+                <p>
+                    Share what you have, rent what you need,
+                    and keep useful equipment circulating
+                    through the DIU community.
+                </p>
+
+                <div class="hero-features">
+
+                    <div class="hero-feature">
+
+                        <span class="feature-icon">
+                            <i class="bi bi-patch-check"></i>
+                        </span>
+
+                        <div>
+                            <strong>DIU Verified Accounts</strong>
+
+                            <small>
+                                Student accounts require a valid
+                                @diu.edu.bd email.
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <div class="hero-feature">
+
+                        <span class="feature-icon">
+                            <i class="bi bi-envelope-check"></i>
+                        </span>
+
+                        <div>
+                            <strong>Email Verification</strong>
+
+                            <small>
+                                New accounts are activated only
+                                after OTP verification.
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <div class="hero-feature">
+
+                        <span class="feature-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </span>
+
+                        <div>
+                            <strong>Secure Sessions</strong>
+
+                            <small>
+                                Passwords are protected using
+                                BCrypt and Spring Security.
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <p class="hero-footer">
+                KitLoop — Share. Rent. Reuse.
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="auth-panel">
+
+        <div class="mobile-brand">
+            <div th:replace="~{fragments/brand :: brand}">
+            </div>
+        </div>
+
+        <div class="auth-card">
+
+            <div class="auth-card-heading">
+
+                <span class="auth-badge">
+                    <i class="bi bi-arrow-repeat"></i>
+                    Welcome to KitLoop
+                </span>
+
+                <h2>Access your marketplace</h2>
+
+                <p>
+                    Sign in to your existing account or
+                    create a verified DIU account.
+                </p>
+
+            </div>
+
+            <div th:if="${loginError}"
+                 class="server-alert server-alert-danger">
+
+                <i class="bi bi-exclamation-circle-fill"></i>
+
+                <span>
+                    Incorrect email or password.
+                </span>
+
+            </div>
+
+            <div th:if="${logoutSuccess}"
+                 class="server-alert server-alert-success">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span>
+                    You have been logged out successfully.
+                </span>
+
+            </div>
+
+            <div th:if="${registrationSuccess}"
+                 class="server-alert server-alert-success">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span>
+                    Account verified successfully.
+                    You can now sign in.
+                </span>
+
+            </div>
+
+            <div th:if="${registrationExpired}"
+                 class="server-alert server-alert-warning">
+
+                <i class="bi bi-clock-history"></i>
+
+                <span>
+                    The pending registration could not be found.
+                    Please create your account again.
+                </span>
+
+            </div>
+
+            <div class="auth-tabs"
+                 role="tablist">
+
+                <button type="button"
+                        class="auth-tab"
+                        data-auth-target="signin">
+
+                    Sign In
+
+                </button>
+
+                <button type="button"
+                        class="auth-tab"
+                        data-auth-target="register">
+
+                    Create Account
+
+                </button>
+
+            </div>
+
+            <section class="auth-form-panel"
+                     data-auth-panel="signin">
+
+                <form th:action="@{/login}"
+                      method="post">
+
+                    <div class="form-group">
+
+                        <label for="signin-email">
+                            Email
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-envelope"></i>
+
+                            <input id="signin-email"
+                                   name="email"
+                                   type="email"
+                                   autocomplete="username"
+                                   placeholder="Email address"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="signin-password">
+                            Password
+                        </label>
+
+                        <div class="input-wrapper has-password-toggle">
+
+                            <i class="bi bi-lock"></i>
+
+                            <input id="signin-password"
+                                   name="password"
+                                   type="password"
+                                   autocomplete="current-password"
+                                   placeholder="Enter your password"
+                                   required>
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    data-password-toggle="signin-password"
+                                    aria-label="Show password">
+
+                                <i class="bi bi-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <button type="submit"
+                            class="primary-auth-button">
+
+                        <span>Sign In</span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+            </section>
+
+            <section class="auth-form-panel"
+                     data-auth-panel="register"
+                     hidden>
+
+                <div th:if="${registrationError}"
+                     class="server-alert server-alert-danger">
+
+                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                    <span th:text="${registrationError}">
+                        Registration failed.
+                    </span>
+
+                </div>
+
+                <form th:action="@{/register}"
+                      th:object="${registrationRequest}"
+                      method="post">
+
+                    <div class="form-group">
+
+                        <label for="register-name">
+                            Full Name
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-person"></i>
+
+                            <input id="register-name"
+                                   th:field="*{fullName}"
+                                   type="text"
+                                   autocomplete="name"
+                                   placeholder="Your full name"
+                                   required>
+
+                        </div>
+
+                        <small class="field-error"
+                               th:if="${#fields.hasErrors('fullName')}"
+                               th:errors="*{fullName}">
+                        </small>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="register-email">
+                            DIU Email
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-envelope"></i>
+
+                            <input id="register-email"
+                                   th:field="*{email}"
+                                   type="email"
+                                   autocomplete="email"
+                                   placeholder="name@diu.edu.bd"
+                                   required>
+
+                        </div>
+
+                        <small class="field-hint">
+                            Only @diu.edu.bd accounts can receive
+                            a KitLoop verification code.
+                        </small>
+
+                        <small class="field-error"
+                               th:if="${#fields.hasErrors('email')}"
+                               th:errors="*{email}">
+                        </small>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="register-phone">
+                            Phone / bKash Number
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-phone"></i>
+
+                            <input id="register-phone"
+                                   th:field="*{phone}"
+                                   type="tel"
+                                   inputmode="numeric"
+                                   autocomplete="tel"
+                                   maxlength="11"
+                                   placeholder="01XXXXXXXXX"
+                                   required>
+
+                        </div>
+
+                        <small class="field-error"
+                               th:if="${#fields.hasErrors('phone')}"
+                               th:errors="*{phone}">
+                        </small>
+
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="register-password">
+                                Password
+                            </label>
+
+                            <div class="input-wrapper has-password-toggle">
+
+                                <i class="bi bi-lock"></i>
+
+                                <input id="register-password"
+                                       name="password"
+                                       type="password"
+                                       autocomplete="new-password"
+                                       minlength="8"
+                                       maxlength="72"
+                                       placeholder="Minimum 8 characters"
+                                       required>
+
+                                <button type="button"
+                                        class="password-toggle"
+                                        data-password-toggle="register-password"
+                                        aria-label="Show password">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </button>
+
+                            </div>
+
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('password')}"
+                                   th:errors="*{password}">
+                            </small>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="register-confirm-password">
+                                Confirm Password
+                            </label>
+
+                            <div class="input-wrapper has-password-toggle">
+
+                                <i class="bi bi-shield-lock"></i>
+
+                                <input id="register-confirm-password"
+                                       name="confirmPassword"
+                                       type="password"
+                                       autocomplete="new-password"
+                                       placeholder="Confirm password"
+                                       required>
+
+                                <button type="button"
+                                        class="password-toggle"
+                                        data-password-toggle="register-confirm-password"
+                                        aria-label="Show password">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </button>
+
+                            </div>
+
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('confirmPassword')}"
+                                   th:errors="*{confirmPassword}">
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <button type="submit"
+                            class="primary-auth-button">
+
+                        <span>Create Account</span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+            </section>
+
+            <div class="security-note">
+
+                <i class="bi bi-shield-check"></i>
+
+                <span>
+                    Passwords and verification codes are never
+                    stored in plaintext.
+                </span>
+
+            </div>
+
+        </div>
+
+        <p class="auth-panel-footer">
+            © 2026 KitLoop
+            <span>•</span>
+            DIU Community Marketplace
+        </p>
+
+    </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script th:src="@{/js/auth-shell.js}">
+</script>
+
+</body>
+</html>

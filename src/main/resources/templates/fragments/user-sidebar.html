@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<aside th:fragment="sidebar"
+       class="user-sidebar"
+       id="userSidebar">
+
+    <div class="sidebar-header">
+
+        <a th:href="@{/user/dashboard}"
+           class="sidebar-brand">
+
+            <span class="sidebar-brand-icon">
+                <i class="bi bi-arrow-repeat"></i>
+            </span>
+
+            <span class="sidebar-brand-copy">
+                <strong>KitLoop</strong>
+                <small>Share. Rent. Reuse.</small>
+            </span>
+
+        </a>
+
+        <button type="button"
+                class="sidebar-close-button"
+                id="sidebarCloseButton"
+                aria-label="Close navigation">
+
+            <i class="bi bi-x-lg"></i>
+
+        </button>
+
+    </div>
+
+    <div class="sidebar-section-label">
+        Workspace
+    </div>
+
+    <nav class="sidebar-nav"
+         aria-label="User navigation">
+
+        <a th:href="@{/user/dashboard}"
+           class="sidebar-link"
+           th:classappend="${activePage == 'dashboard'} ? ' active' : ''">
+
+            <span class="sidebar-link-icon">
+                <i class="bi bi-grid-1x2"></i>
+            </span>
+
+            <span>Dashboard</span>
+
+        </a>
+
+        <a th:href="@{/user/equipments}"
+           class="sidebar-link"
+           th:classappend="${activePage == 'browse'} ? ' active' : ''">
+
+            <span class="sidebar-link-icon">
+                <i class="bi bi-search"></i>
+            </span>
+
+            <span>Browse Equipments</span>
+
+        </a>
+
+        <a th:href="@{/user/listings}"
+           class="sidebar-link"
+           th:classappend="${activePage == 'listings'} ? ' active' : ''">
+
+            <span class="sidebar-link-icon">
+                <i class="bi bi-box-seam"></i>
+            </span>
+
+            <span>My Listing</span>
+
+        </a>
+
+        <a th:href="@{/user/notifications}"
+           class="sidebar-link"
+           th:classappend="${activePage == 'notifications'} ? ' active' : ''">
+
+            <span class="sidebar-link-icon">
+                <i class="bi bi-bell"></i>
+            </span>
+
+            <span>Notifications</span>
+
+        </a>
+
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-profile">
+
+        <div class="sidebar-profile-avatar">
+            <i class="bi bi-person"></i>
+        </div>
+
+        <div class="sidebar-profile-copy">
+
+            <strong th:text="${currentUser.fullName}">
+                User Name
+            </strong>
+
+            <small th:text="${currentUser.email}">
+                user@diu.edu.bd
+            </small>
+
+        </div>
+
+    </div>
+
+    <form th:action="@{/logout}"
+          method="post"
+          class="sidebar-logout-form">
+
+        <button type="submit"
+                class="sidebar-logout-button">
+
+            <i class="bi bi-box-arrow-right"></i>
+
+            <span>Logout</span>
+
+        </button>
+
+    </form>
+
+</aside>
+
+</body>
+</html>

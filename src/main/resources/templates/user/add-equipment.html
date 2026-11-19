@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Add Equipment | KitLoop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/user-portal.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/marketplace.css}">
+
+</head>
+
+<body>
+
+<div class="portal-shell">
+
+    <div th:replace="~{fragments/user-sidebar :: sidebar}">
+    </div>
+
+    <div class="sidebar-backdrop"
+         id="sidebarBackdrop">
+    </div>
+
+    <div class="user-main">
+
+        <div th:replace="~{fragments/user-topbar :: topbar}">
+        </div>
+
+        <main class="user-content">
+
+            <form th:action="@{/user/listings/new}"
+                  th:object="${listingForm}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="listing-form-layout">
+
+                <section class="listing-image-panel">
+
+                    <div class="section-heading">
+
+                        <span class="panel-eyebrow">
+                            Equipment Photo
+                        </span>
+
+                        <h2>
+                            Show your equipment clearly
+                        </h2>
+
+                        <p>
+                            Upload one clear JPG or PNG image.
+                            Maximum file size is 5 MB.
+                        </p>
+
+                    </div>
+
+                    <label class="equipment-upload-box"
+                           for="equipmentImage">
+
+                        <input id="equipmentImage"
+                               th:field="*{image}"
+                               type="file"
+                               accept="image/jpeg,image/png">
+
+                        <div id="imagePlaceholder"
+                             class="upload-placeholder">
+
+                            <span>
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </span>
+
+                            <strong>
+                                Choose Equipment Picture
+                            </strong>
+
+                            <small>
+                                JPG or PNG • Maximum 5 MB
+                            </small>
+
+                        </div>
+
+                        <img id="equipmentPreview"
+                             class="equipment-preview"
+                             src=""
+                             alt="Equipment preview"
+                             hidden>
+
+                    </label>
+
+                    <small class="field-error"
+                           th:if="${#fields.hasErrors('image')}"
+                           th:errors="*{image}">
+                    </small>
+
+                    <button type="button"
+                            id="changeImageButton"
+                            class="change-image-button"
+                            hidden>
+
+                        <i class="bi bi-image"></i>
+                        Choose Another Picture
+
+                    </button>
+
+                </section>
+
+                <section class="listing-form-card">
+
+                    <div class="section-heading">
+
+                        <span class="panel-eyebrow">
+                            Listing Information
+                        </span>
+
+                        <h2>
+                            Add Equipment
+                        </h2>
+
+                        <p>
+                            Provide accurate information so other
+                            KitLoop users know exactly what you offer.
+                        </p>
+
+                    </div>
+
+                    <div class="market-form-group">
+
+                        <label for="title">
+                            Title
+                        </label>
+
+                        <input id="title"
+                               th:field="*{title}"
+                               type="text"
+                               maxlength="120"
+                               placeholder="Example: Canon EOS 200D Camera"
+                               class="market-input">
+
+                        <small class="field-error"
+                               th:if="${#fields.hasErrors('title')}"
+                               th:errors="*{title}">
+                        </small>
+
+                    </div>
+
+                    <div class="market-form-grid">
+
+                        <div class="market-form-group">
+
+                            <label for="category">
+                                Category
+                            </label>
+
+                            <select id="category"
+                                    th:field="*{category}"
+                                    class="market-input">
+
+                                <option value="">
+                                    Select category
+                                </option>
+
+                                <option th:each="categoryItem : ${categories}"
+                                        th:value="${categoryItem.name()}"
+                                        th:text="${categoryItem.label}">
+                                </option>
+
+                            </select>
+
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('category')}"
+                                   th:errors="*{category}">
+                            </small>
+
+                        </div>
+
+                        <div class="market-form-group">
+
+                            <label for="condition">
+                                Condition
+                            </label>
+
+                            <select id="condition"
+                                    th:field="*{condition}"
+                                    class="market-input">
+
+                                <option value="">
+                                    Select condition
+                                </option>
+
+                                <option th:each="conditionItem : ${conditions}"
+                                        th:value="${conditionItem.name()}"
+                                        th:text="${conditionItem.label}">
+                                </option>
+
+                            </select>
+
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('condition')}"
+                                   th:errors="*{condition}">
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="market-form-group">
+
+                        <label>
+                            Listing Type
+                        </label>
+
+                        <div class="listing-type-grid">
+
+                            <label class="listing-type-option">
+
+                                <input type="radio"
+                                       th:field="*{listingType}"
+                                       value="FREE_SHARE"
+                                       data-listing-type>
+
+                                <span class="listing-type-content">
+
+                                    <i class="bi bi-heart"></i>
+
+                                    <strong>
+                                        Free Share
+                                    </strong>
+
+                                    <small>
+                                        Share with a refundable deposit
+                                    </small>
+
+                                </span>
+
+                            </label>
+
+                            <label class="listing-type-option">
+
+                                <input type="radio"
+                                       th:field="*{listingType}"
+                                       value="RENT"
+                                       data-listing-type>
+
+                                <span class="listing-type-content">
+
+                                    <i class="bi bi-arrow-left-right"></i>
+
+                                    <strong>
+                                        Rent
+                                    </strong>
+
+                                    <small>
+                                        Let another user rent the item
+                                    </small>
+
+                                </span>
+
+                            </label>
+
+                            <label class="listing-type-option">
+
+                                <input type="radio"
+                                       th:field="*{listingType}"
+                                       value="SALE"
+                                       data-listing-type>
+
+                                <span class="listing-type-content">
+
+                                    <i class="bi bi-tag"></i>
+
+                                    <strong>
+                                        Sale
+                                    </strong>
+
+                                    <small>
+                                        Sell the equipment permanently
+                                    </small>
+
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                        <small class="field-error"
+                               th:if="${#fields.hasErrors('listingType')}"
+                               th:errors="*{listingType}">
+                        </small>
+
+                    </div>
+
+                    <div id="freeSharePriceGroup"
+                         class="conditional-price-group"
+                         hidden>
+
+                        <div class="market-form-group">
+
+                            <label for="refundableDeposit">
+                                Refundable Deposit
+                            </label>
+
+                            <div class="money-input">
+
+                                <span>৳</span>
+
+                                <input id="refundableDeposit"
+                                       th:field="*{refundableDeposit}"
+                                       type="number"
+                                       min="0.01"
+                                       step="0.01"
+                                       placeholder="500.00"
+                                       class="market-input">
+
+                            </div>
+
+                            <small class="field-hint">
+                                This becomes the FREE_SHARE token amount.
+                            </small>
+
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('refundableDeposit')}"
+                                   th:errors="*{refundableDeposit}">
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div id="rentPriceGroup"
+                         class="conditional-price-group"
+                         hidden>
+
+                        <div class="market-form-group">
+
+                            <label for="rentPrice">
+                                Rent Price
+                            </label>
+
+                            <div class="money-input">
+
+                                <span>৳</span>
+
+                                <input id="rentPrice"
+                                       th:field="*{rentPrice}"
+                                       type="number"
+                                       min="0.01"
+                                       step="0.01"
+                                       placeholder="300.00"
+                                       class="market-input">
+
+                            </div>
+
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('rentPrice')}"
+                                   th:errors="*{rentPrice}">
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div id="salePriceGroup"
+                         class="conditional-price-group"
+                         hidden>
+
+                        <div class="market-form-group">
+
+                            <label for="salePrice">
+                                Sale Price
+                            </label>
+
+                            <div class="money-input">
+
+                                <span>৳</span>
+
+                                <input id="salePrice"
+                                       th:field="*{salePrice}"
+                                       type="number"
+                                       min="0.01"
+                                       step="0.01"
+                                       placeholder="5000.00"
+                                       class="market-input">
+
+                            </div>
+
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('salePrice')}"
+                                   th:errors="*{salePrice}">
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="market-form-group">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea id="description"
+                                  th:field="*{description}"
+                                  maxlength="2000"
+                                  rows="7"
+                                  placeholder="Describe the equipment, included accessories, usage notes, defects or anything another user should know."
+                                  class="market-input market-textarea">
+                        </textarea>
+
+                        <div class="textarea-footer">
+
+                            <small>
+                                Be clear about the item's actual condition.
+                            </small>
+
+                            <small id="descriptionCounter">
+                                0 / 2000
+                            </small>
+
+                        </div>
+
+                        <small class="field-error"
+                               th:if="${#fields.hasErrors('description')}"
+                               th:errors="*{description}">
+                        </small>
+
+                    </div>
+
+                    <div class="listing-form-actions">
+
+                        <a th:href="@{/user/listings}"
+                           class="market-secondary-button">
+
+                            Cancel
+
+                        </a>
+
+                        <button type="submit"
+                                class="market-primary-button">
+
+                            <i class="bi bi-plus-circle"></i>
+                            Add Listing
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </form>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script th:src="@{/js/user-portal.js}">
+</script>
+
+<script th:src="@{/js/marketplace.js}">
+</script>
+
+</body>
+</html>

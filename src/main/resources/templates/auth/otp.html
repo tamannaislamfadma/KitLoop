@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Verify Email | KitLoop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/app.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/auth.css}">
+</head>
+
+<body>
+
+<main class="otp-shell">
+
+    <div class="otp-wrapper">
+
+        <div class="otp-brand">
+
+            <div th:replace="~{fragments/brand :: brand}">
+            </div>
+
+        </div>
+
+        <section class="otp-card">
+
+            <div class="otp-icon">
+                <i class="bi bi-envelope-check"></i>
+            </div>
+
+            <div class="otp-heading">
+
+                <h1>Verify your email</h1>
+
+                <p>
+                    We sent a 6-digit verification code to
+                    <span class="otp-email"
+                          th:text="${email}">
+                        name@diu.edu.bd
+                    </span>
+                </p>
+
+            </div>
+
+            <div th:if="${resent}"
+                 class="server-alert server-alert-success mt-4">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span>
+                    A new verification code has been sent.
+                </span>
+
+            </div>
+
+            <div th:if="${otpError}"
+                 class="server-alert server-alert-danger mt-4">
+
+                <i class="bi bi-exclamation-circle-fill"></i>
+
+                <span th:text="${otpError}">
+                    Verification failed.
+                </span>
+
+            </div>
+
+            <div th:if="${resendError}"
+                 class="server-alert server-alert-warning mt-4">
+
+                <i class="bi bi-clock-history"></i>
+
+                <span th:text="${resendError}">
+                    Please wait.
+                </span>
+
+            </div>
+
+            <form class="otp-form"
+                  th:action="@{/verify-otp}"
+                  th:object="${otpVerificationRequest}"
+                  method="post">
+
+                <input type="hidden"
+                       th:field="*{email}">
+
+                <label for="otp"
+                       class="form-label fw-semibold">
+                    Verification Code
+                </label>
+
+                <input id="otp"
+                       name="otp"
+                       class="otp-code-input"
+                       type="text"
+                       inputmode="numeric"
+                       autocomplete="one-time-code"
+                       maxlength="6"
+                       pattern="[0-9]{6}"
+                       data-otp-input
+                       autofocus
+                       required>
+
+                <small class="field-error text-center"
+                       th:if="${#fields.hasErrors('otp')}"
+                       th:errors="*{otp}">
+                </small>
+
+                <p class="otp-meta">
+
+                    This code expires in
+
+                    <strong th:text="${otpExpiryMinutes}">
+                        5
+                    </strong>
+
+                    minutes.
+
+                </p>
+
+                <div class="otp-actions">
+
+                    <button type="submit"
+                            class="primary-auth-button">
+
+                        <span>Verify Account</span>
+
+                        <i class="bi bi-check2-circle"></i>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <form th:action="@{/resend-otp}"
+                  method="post"
+                  class="mt-3">
+
+                <input type="hidden"
+                       name="email"
+                       th:value="${email}">
+
+                <button type="submit"
+                        class="secondary-auth-button w-100">
+
+                    <i class="bi bi-arrow-clockwise"></i>
+
+                    Send New Code
+
+                </button>
+
+            </form>
+
+            <a th:href="@{/}"
+               class="otp-back">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Back to sign in
+
+            </a>
+
+        </section>
+
+    </div>
+
+</main>
+
+<script th:src="@{/js/auth-shell.js}">
+</script>
+
+</body>
+</html>

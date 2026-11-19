@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Admin Notifications | KitLoop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin-portal.css}">
+
+</head>
+
+<body>
+
+<div class="admin-shell">
+
+    <div th:replace="~{fragments/admin-sidebar :: sidebar}">
+    </div>
+
+    <div class="admin-main">
+
+        <div th:replace="~{fragments/admin-topbar :: topbar}">
+        </div>
+
+        <main class="admin-content">
+
+            <section class="admin-panel">
+
+                <h2>
+                    Admin Notifications
+                </h2>
+
+                <p>
+                    FREE_SHARE payment and request activity.
+                </p>
+
+                <div th:if="${#lists.isEmpty(notifications)}"
+                     class="mt-4">
+
+                    No notifications yet.
+
+                </div>
+
+                <div th:if="${!#lists.isEmpty(notifications)}"
+                     class="admin-notification-list">
+
+                    <article th:each="notification : ${notifications}"
+                             class="admin-notification"
+                             th:classappend="${!notification.read} ? ' unread' : ''">
+
+                        <i class="bi bi-bell"></i>
+
+                        <div>
+
+                            <strong th:text="${notification.title}">
+                                Notification
+                            </strong>
+
+                            <p th:text="${notification.message}">
+                                Message
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/admin-portal.js}">
+</script>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Admin Settings | KitLoop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin-portal.css}">
+
+</head>
+
+<body>
+
+<div class="admin-shell">
+
+    <div th:replace="~{fragments/admin-sidebar :: sidebar}">
+    </div>
+
+    <div class="admin-main">
+
+        <div th:replace="~{fragments/admin-topbar :: topbar}">
+        </div>
+
+        <main class="admin-content">
+
+            <div th:if="${settingsSuccess}"
+                 class="admin-alert success">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span th:text="${settingsSuccess}">
+                </span>
+
+            </div>
+
+            <section class="admin-settings-card">
+
+                <h2>
+                    FREE_SHARE bKash Number
+                </h2>
+
+                <p>
+                    All new FREE_SHARE payment pages will
+                    show this administrator-controlled number.
+                </p>
+
+                <form th:action="@{/admin/settings}"
+                      th:object="${settingForm}"
+                      method="post"
+                      class="mt-4">
+
+                    <div class="admin-form-group">
+
+                        <label for="bkashNumber">
+                            Admin bKash Number
+                        </label>
+
+                        <input id="bkashNumber"
+                               th:field="*{bkashNumber}"
+                               type="tel"
+                               maxlength="11"
+                               class="admin-form-control"
+                               placeholder="01XXXXXXXXX">
+
+                        <small class="admin-field-error"
+                               th:if="${#fields.hasErrors('bkashNumber')}"
+                               th:errors="*{bkashNumber}">
+                        </small>
+
+                    </div>
+
+                    <button type="submit"
+                            class="admin-button primary mt-3">
+
+                        <i class="bi bi-check2"></i>
+                        Save Settings
+
+                    </button>
+
+                </form>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/admin-portal.js}">
+</script>
+
+</body>
+</html>

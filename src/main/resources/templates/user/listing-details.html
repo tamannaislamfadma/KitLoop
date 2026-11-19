@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${listing.title + ' | KitLoop'}">
+        Equipment | KitLoop
+    </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/user-portal.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/marketplace.css}">
+
+</head>
+
+<body>
+
+<div class="portal-shell">
+
+    <div th:replace="~{fragments/user-sidebar :: sidebar}">
+    </div>
+
+    <div class="sidebar-backdrop"
+         id="sidebarBackdrop">
+    </div>
+
+    <div class="user-main">
+
+        <div th:replace="~{fragments/user-topbar :: topbar}">
+        </div>
+
+        <main class="user-content">
+
+            <div th:if="${listingCreated}"
+                 class="market-alert success">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span>
+                    Equipment listing created successfully.
+                </span>
+
+            </div>
+
+            <div th:if="${actionError}"
+                 class="market-alert danger">
+
+                <i class="bi bi-exclamation-circle-fill"></i>
+
+                <span th:text="${actionError}">
+                    Action failed.
+                </span>
+
+            </div>
+
+            <div th:if="${actionInfo}"
+                 class="market-alert info">
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                <span th:text="${actionInfo}">
+                    Information.
+                </span>
+
+            </div>
+
+            <a th:href="${isOwner} ? @{/user/listings} : @{/user/equipments}"
+               class="back-link">
+
+                <i class="bi bi-arrow-left"></i>
+
+                <span th:text="${isOwner} ? 'Back to My Listing' : 'Back to Marketplace'">
+                    Back
+                </span>
+
+            </a>
+
+            <section class="listing-details-layout">
+
+                <div class="details-image-card">
+
+                    <img th:src="@{/media/equipment/{filename}(filename=${listing.imageFilename})}"
+                         th:alt="${listing.title}">
+
+                </div>
+
+                <div class="details-content-card">
+
+                    <div class="details-badges">
+
+                        <span class="type-badge static-badge"
+                              th:classappend="${' type-' + #strings.toLowerCase(listing.listingType.name())}"
+                              th:text="${listing.listingType.label}">
+                            Rent
+                        </span>
+
+                        <span class="status-badge standalone-status"
+                              th:text="${listing.status.label}">
+                            Active
+                        </span>
+
+                    </div>
+
+                    <div class="equipment-meta">
+
+                        <span th:text="${listing.category.label}">
+                            Category
+                        </span>
+
+                        <span>•</span>
+
+                        <span th:text="${listing.condition.label}">
+                            Good
+                        </span>
+
+                    </div>
+
+                    <h1 th:text="${listing.title}">
+                        Equipment title
+                    </h1>
+
+                    <div class="details-price"
+                         th:if="${listing.listingType.name() == 'RENT'}">
+
+                        <small>
+                            Rent Price
+                        </small>
+
+                        <strong>
+                            ৳<span th:text="${#numbers.formatDecimal(listing.rentPrice, 1, 2)}">
+                                0.00
+                            </span>
+                        </strong>
+
+                    </div>
+
+                    <div class="details-price"
+                         th:if="${listing.listingType.name() == 'SALE'}">
+
+                        <small>
+                            Sale Price
+                        </small>
+
+                        <strong>
+                            ৳<span th:text="${#numbers.formatDecimal(listing.salePrice, 1, 2)}">
+                                0.00
+                            </span>
+                        </strong>
+
+                    </div>
+
+                    <div class="details-price"
+                         th:if="${listing.listingType.name() == 'FREE_SHARE'}">
+
+                        <small>
+                            Refundable Deposit
+                        </small>
+
+                        <strong>
+                            ৳<span th:text="${#numbers.formatDecimal(listing.refundableDeposit, 1, 2)}">
+                                0.00
+                            </span>
+                        </strong>
+
+                    </div>
+
+                    <div class="details-divider">
+                    </div>
+
+                    <div class="description-block">
+
+                        <h3>
+                            Description
+                        </h3>
+
+                        <p th:text="${listing.description}">
+                            Description
+                        </p>
+
+                    </div>
+
+                    <div th:if="${!isOwner}"
+                         class="details-actions">
+
+                        <a th:href="@{/user/listings/{id}/chat(id=${listing.id})}"
+                           class="market-secondary-button large-action">
+
+                            <i class="bi bi-chat-dots"></i>
+                            Chat
+
+                        </a>
+
+                        <a th:href="@{/user/listings/{id}/request(id=${listing.id})}"
+                           class="market-primary-button large-action">
+
+                            <i class="bi bi-send"></i>
+                            Send Request
+
+                        </a>
+
+                    </div>
+
+                    <div th:if="${isOwner}"
+                         class="owner-listing-message">
+
+                        <i class="bi bi-person-check"></i>
+
+                        <div>
+
+                            <strong>
+                                This is your listing
+                            </strong>
+
+                            <p>
+                                KitLoop prevents you from sending
+                                a request for your own equipment.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="owner-details-card">
+
+                <div class="owner-avatar">
+                    <i class="bi bi-person"></i>
+                </div>
+
+                <div class="owner-details-main">
+
+                    <span class="panel-eyebrow">
+                        Listed By
+                    </span>
+
+                    <h3 th:text="${listing.owner.fullName}">
+                        Owner
+                    </h3>
+
+                    <p>
+                        Verified KitLoop member
+                    </p>
+
+                </div>
+
+                <div class="owner-contact-grid">
+
+                    <div>
+
+                        <small>
+                            Email
+                        </small>
+
+                        <strong th:text="${listing.owner.email}">
+                            email@diu.edu.bd
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <small>
+                            Phone / bKash
+                        </small>
+
+                        <strong th:text="${listing.owner.phone}">
+                            01XXXXXXXXX
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <small>
+                            Trust Score
+                        </small>
+
+                        <strong>
+                            <span th:text="${listing.owner.trustScore}">
+                                0
+                            </span>
+                            pts
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script th:src="@{/js/user-portal.js}">
+</script>
+
+</body>
+</html>

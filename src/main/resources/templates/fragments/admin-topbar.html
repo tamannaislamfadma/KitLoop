@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<header th:fragment="topbar"
+        class="admin-topbar">
+
+    <div>
+
+        <button type="button"
+                id="adminSidebarOpen"
+                class="admin-menu-button">
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+        <div>
+
+            <h1 th:text="${pageTitle}">
+                Admin
+            </h1>
+
+            <p th:text="${pageSubtitle}">
+                KitLoop administration
+            </p>
+
+        </div>
+
+    </div>
+
+    <span class="admin-badge">
+
+        <i class="bi bi-shield-check"></i>
+        ADMIN
+
+    </span>
+
+</header>
+
+</body>
+</html>

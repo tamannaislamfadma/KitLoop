@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications | KitLoop</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/user-portal.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/marketplace.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/requests.css}">
+
+</head>
+
+<body>
+
+<div class="portal-shell">
+
+    <div th:replace="~{fragments/user-sidebar :: sidebar}">
+    </div>
+
+    <div class="sidebar-backdrop"
+         id="sidebarBackdrop">
+    </div>
+
+    <div class="user-main">
+
+        <div th:replace="~{fragments/user-topbar :: topbar}">
+        </div>
+
+        <main class="user-content">
+
+            <div th:if="${decisionSuccess}"
+                 class="market-alert success">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span th:text="${decisionSuccess}">
+                </span>
+
+            </div>
+
+            <div th:if="${decisionError}"
+                 class="market-alert danger">
+
+                <i class="bi bi-exclamation-circle-fill"></i>
+
+                <span th:text="${decisionError}">
+                </span>
+
+            </div>
+
+            <section class="notification-section">
+
+                <div class="request-section-heading">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            Listing Status / Requests
+                        </span>
+
+                        <h2>
+                            Incoming Requests
+                        </h2>
+
+                    </div>
+
+                    <span class="section-count"
+                          th:text="${#lists.size(incomingRequests)}">
+                        0
+                    </span>
+
+                </div>
+
+                <div th:if="${#lists.isEmpty(incomingRequests)}"
+                     class="request-empty">
+
+                    <i class="bi bi-inbox"></i>
+
+                    <strong>
+                        No incoming requests
+                    </strong>
+
+                    <p>
+                        Requests for your equipment will appear here.
+                    </p>
+
+                </div>
+
+                <div class="request-list"
+                     th:if="${!#lists.isEmpty(incomingRequests)}">
+
+                    <article th:each="request : ${incomingRequests}"
+                             class="request-row">
+
+                        <img th:src="@{/media/equipment/{filename}(filename=${request.listing.imageFilename})}"
+                             th:alt="${request.listing.title}">
+
+                        <div class="request-row-main">
+
+                            <div class="request-row-title">
+
+                                <div>
+
+                                    <small th:text="${request.listing.listingType.label}">
+                                        Rent
+                                    </small>
+
+                                    <h3 th:text="${request.listing.title}">
+                                        Equipment
+                                    </h3>
+
+                                </div>
+
+                                <span class="request-status"
+                                      th:classappend="${' request-' + #strings.toLowerCase(request.status.name())}"
+                                      th:text="${request.status.label}">
+                                    Pending
+                                </span>
+
+                            </div>
+
+                            <div class="request-meta-grid">
+
+                                <div>
+                                    <small>Requester</small>
+                                    <strong th:text="${request.requester.fullName}">
+                                        User
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <small>Amount</small>
+                                    <strong>
+                                        ৳<span th:text="${#numbers.formatDecimal(request.payableAmount, 1, 2)}">
+                                            0.00
+                                        </span>
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <small>Transaction ID</small>
+                                    <strong th:text="${request.transactionId}">
+                                        TXN
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <small>Sender</small>
+                                    <strong th:text="${request.senderNumber}">
+                                        01XXXXXXXXX
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                            <div class="request-actions"
+                                 th:if="${request.status.name() == 'PENDING'}">
+
+                                <div th:if="${request.listing.listingType.name() != 'FREE_SHARE'}"
+                                     class="request-owner-actions">
+
+                                    <a th:href="@{/media/payments/{filename}(filename=${request.paymentScreenshotFilename})}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       class="market-secondary-button">
+
+                                        <i class="bi bi-image"></i>
+                                        Payment Proof
+
+                                    </a>
+
+                                    <form th:action="@{/user/requests/{id}/approve(id=${request.id})}"
+                                          method="post">
+
+                                        <button type="submit"
+                                                class="request-approve-button">
+
+                                            <i class="bi bi-check-lg"></i>
+                                            Approve
+
+                                        </button>
+
+                                    </form>
+
+                                    <form th:action="@{/user/requests/{id}/reject(id=${request.id})}"
+                                          method="post">
+
+                                        <button type="submit"
+                                                class="request-reject-button">
+
+                                            <i class="bi bi-x-lg"></i>
+                                            Reject
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                                <div th:if="${request.listing.listingType.name() == 'FREE_SHARE'}"
+                                     class="admin-review-badge">
+
+                                    <i class="bi bi-shield-lock"></i>
+
+                                    Waiting for Admin Review
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+            <section class="notification-section">
+
+                <div class="request-section-heading">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            My Activity
+                        </span>
+
+                        <h2>
+                            Sent Requests
+                        </h2>
+
+                    </div>
+
+                    <span class="section-count"
+                          th:text="${#lists.size(outgoingRequests)}">
+                        0
+                    </span>
+
+                </div>
+
+                <div th:if="${#lists.isEmpty(outgoingRequests)}"
+                     class="request-empty">
+
+                    <i class="bi bi-send"></i>
+
+                    <strong>
+                        No requests sent yet
+                    </strong>
+
+                </div>
+
+                <div class="outgoing-request-grid"
+                     th:if="${!#lists.isEmpty(outgoingRequests)}">
+
+                    <a th:each="request : ${outgoingRequests}"
+                       th:href="@{/user/requests/{id}(id=${request.id})}"
+                       class="outgoing-request-card">
+
+                        <div>
+
+                            <small th:text="${request.listing.listingType.label}">
+                                Type
+                            </small>
+
+                            <h3 th:text="${request.listing.title}">
+                                Equipment
+                            </h3>
+
+                            <p>
+                                ৳<span th:text="${#numbers.formatDecimal(request.payableAmount, 1, 2)}">
+                                    0.00
+                                </span>
+                            </p>
+
+                        </div>
+
+                        <span class="request-status"
+                              th:classappend="${' request-' + #strings.toLowerCase(request.status.name())}"
+                              th:text="${request.status.label}">
+                            Pending
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+            <section class="notification-section">
+
+                <div class="request-section-heading">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            Updates
+                        </span>
+
+                        <h2>
+                            Notifications
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <div th:if="${#lists.isEmpty(notifications)}"
+                     class="request-empty">
+
+                    <i class="bi bi-bell-slash"></i>
+
+                    <strong>
+                        You're all caught up
+                    </strong>
+
+                </div>
+
+                <div class="notification-feed"
+                     th:if="${!#lists.isEmpty(notifications)}">
+
+                    <article th:each="notification : ${notifications}"
+                             class="notification-item"
+                             th:classappend="${!notification.read} ? ' unread' : ''">
+
+                        <span class="notification-feed-icon">
+                            <i class="bi bi-bell"></i>
+                        </span>
+
+                        <div>
+
+                            <strong th:text="${notification.title}">
+                                Notification
+                            </strong>
+
+                            <p th:text="${notification.message}">
+                                Message
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/user-portal.js}">
+</script>
+
+</body>
+</html>

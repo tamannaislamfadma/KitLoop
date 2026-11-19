@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>My Listing | KitLoop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/user-portal.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/marketplace.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/lifecycle.css}">
+
+</head>
+
+<body>
+
+<div class="portal-shell">
+
+    <div th:replace="~{fragments/user-sidebar :: sidebar}">
+    </div>
+
+    <div class="sidebar-backdrop"
+         id="sidebarBackdrop">
+    </div>
+
+    <div class="user-main">
+
+        <div th:replace="~{fragments/user-topbar :: topbar}">
+        </div>
+
+        <main class="user-content">
+
+            <div th:if="${lifecycleSuccess}"
+                 class="lifecycle-alert success"
+                 th:text="${lifecycleSuccess}">
+            </div>
+
+            <div th:if="${lifecycleError}"
+                 class="lifecycle-alert danger"
+                 th:text="${lifecycleError}">
+            </div>
+
+            <section class="marketplace-hero">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        Your Equipment
+                    </span>
+
+                    <h2>
+                        My Listing
+                    </h2>
+
+                    <p>
+                        Manage listings, statuses and completed returns.
+                    </p>
+
+                </div>
+
+                <a th:href="@{/user/listings/new}"
+                   class="market-primary-button">
+
+                    <i class="bi bi-plus-circle"></i>
+                    Add Equipment
+
+                </a>
+
+            </section>
+
+            <section th:if="${!#lists.isEmpty(listings)}"
+                     class="my-listing-list">
+
+                <article th:each="listing : ${listings}"
+                         class="my-listing-card">
+
+                    <a th:href="@{/user/listings/{id}(id=${listing.id})}"
+                       class="my-listing-image">
+
+                        <img th:src="@{/media/equipment/{filename}(filename=${listing.imageFilename})}"
+                             th:alt="${listing.title}">
+
+                    </a>
+
+                    <div class="my-listing-content">
+
+                        <div class="my-listing-title-row">
+
+                            <div>
+
+                                <div class="equipment-meta">
+
+                                    <span th:text="${listing.category.label}">
+                                    </span>
+
+                                    <span>•</span>
+
+                                    <span th:text="${listing.condition.label}">
+                                    </span>
+
+                                </div>
+
+                                <h3 th:text="${listing.title}">
+                                    Equipment
+                                </h3>
+
+                            </div>
+
+                            <span class="status-badge standalone-status"
+                                  th:text="${listing.status.label}">
+                            </span>
+
+                        </div>
+
+                        <div class="listing-info-grid">
+
+                            <div>
+
+                                <small>Type</small>
+
+                                <strong th:text="${listing.listingType.label}">
+                                </strong>
+
+                            </div>
+
+                            <div>
+
+                                <small>Payment</small>
+
+                                <strong th:text="${listing.paymentStatus.label}">
+                                </strong>
+
+                            </div>
+
+                            <div th:if="${listing.listingType.name() == 'RENT'}">
+
+                                <small>Rent Price</small>
+
+                                <strong>
+                                    ৳<span th:text="${#numbers.formatDecimal(listing.rentPrice, 1, 2)}">
+                                    </span>
+                                </strong>
+
+                            </div>
+
+                            <div th:if="${listing.listingType.name() == 'SALE'}">
+
+                                <small>Sale Price</small>
+
+                                <strong>
+                                    ৳<span th:text="${#numbers.formatDecimal(listing.salePrice, 1, 2)}">
+                                    </span>
+                                </strong>
+
+                            </div>
+
+                            <div th:if="${listing.listingType.name() == 'FREE_SHARE'}">
+
+                                <small>Deposit</small>
+
+                                <strong>
+                                    ৳<span th:text="${#numbers.formatDecimal(listing.refundableDeposit, 1, 2)}">
+                                    </span>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <div th:if="${listing.listingType.name() == 'RENT' && listing.status.name() == 'RENTED'}"
+                             class="status-transition-box">
+
+                            <strong>
+                                Rental currently active
+                            </strong>
+
+                            <p>
+                                Confirm only after the equipment
+                                has actually been returned.
+                            </p>
+
+                            <form th:action="@{/user/listings/{id}/rent-returned(id=${listing.id})}"
+                                  method="post">
+
+                                <button type="submit"
+                                        class="status-action-button">
+
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                    Mark Returned & Reopen
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                        <div th:if="${listing.listingType.name() == 'FREE_SHARE' && listing.status.name() == 'FREE_SHARED'}"
+                             class="status-transition-box">
+
+                            <strong>
+                                Equipment currently shared
+                            </strong>
+
+                            <p>
+                                Confirm after the borrower successfully returns it.
+                            </p>
+
+                            <form th:action="@{/user/listings/{id}/share-returned(id=${listing.id})}"
+                                  method="post">
+
+                                <button type="submit"
+                                        class="status-action-button">
+
+                                    <i class="bi bi-check2-circle"></i>
+                                    Confirm Successful Return
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                        <div class="my-listing-actions">
+
+                            <a th:href="@{/user/listings/{id}(id=${listing.id})}"
+                               class="market-secondary-button">
+
+                                <i class="bi bi-eye"></i>
+                                View Details
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+            <section th:if="${#lists.isEmpty(listings)}"
+                     class="content-card">
+
+                <div class="empty-state">
+
+                    <span class="empty-state-icon">
+                        <i class="bi bi-box2"></i>
+                    </span>
+
+                    <h3>
+                        You have no listings yet
+                    </h3>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/user-portal.js}">
+</script>
+
+</body>
+</html>
